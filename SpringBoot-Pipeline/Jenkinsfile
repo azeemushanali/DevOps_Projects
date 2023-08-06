@@ -1,0 +1,61 @@
+pipeline {
+    agent any // This instructs Jenkins to allocate an executor on any available agent
+
+    environment {
+        // Define any environment variables needed for the build/test/deployment steps
+        // For example:
+        // JAVA_HOME = '/path/to/your/java/home'
+        // MAVEN_HOME = '/path/to/your/maven/home'
+    }
+
+    stages {
+        stage('Checkout') {
+            steps {
+                // Checkout the source code from your version control system (e.g., Git)
+                // For example:
+                // git url: 'https://github.com/yourusername/your-repo.git', branch: 'main'
+            }
+        }
+
+        stage('Build') {
+            steps {
+                // Build your Maven project
+                // For example:
+                // sh 'mvn clean package'
+            }
+        }
+
+        stage('Test') {
+            steps {
+                // Run your tests
+                // For example:
+                // sh 'mvn test'
+            }
+        }
+
+        stage('Deploy') {
+            steps {
+                // Deploy your application to a server or container
+                // For example:
+                // sh 'mvn deploy'
+            }
+        }
+    }
+
+    post {
+        always {
+            // This block is executed no matter if the pipeline succeeds or fails
+            // For example, you can clean up temporary files here
+        }
+
+        success {
+            // This block is executed only if the pipeline succeeds
+            // For example, you can trigger notifications or deployments here
+        }
+
+        failure {
+            // This block is executed only if the pipeline fails
+            // For example, you can send failure notifications here
+        }
+    }
+}
