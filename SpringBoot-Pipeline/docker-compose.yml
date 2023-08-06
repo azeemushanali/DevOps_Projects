@@ -1,0 +1,22 @@
+version: '3'
+services:
+  jenkins:
+      container_name: demo-jenkins
+      image: jenkins/jenkins
+      restart: on-failure
+      ports:
+        - "8001:8080"
+      volumes:
+        - $PWD/jenkins-home:/var/jenkins_home
+      networks:
+        - net
+  sonarqube:
+    container_name: mySonarQube
+    image: sonarqube
+    ports:
+      - 9000:9000
+    networks:
+      - net
+    
+networks:
+  net:
