@@ -4,7 +4,7 @@ pipeline {
     environment {
         // Define any environment variables needed for the build/test/deployment steps
         // For example:
-        // JAVA_HOME = '/path/to/your/java/home'
+        JAVA_HOME = '/path/to/your/java/home'
         // MAVEN_HOME = '/path/to/your/maven/home'
     }
 
