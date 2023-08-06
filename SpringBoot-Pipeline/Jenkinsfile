@@ -14,6 +14,7 @@ pipeline {
                 // Checkout the source code from your version control system (e.g., Git)
                 // For example:
                 // git url: 'https://github.com/yourusername/your-repo.git', branch: 'main'
+                echo 'Pipeline executed successfully!'
             }
         }
 
@@ -22,6 +23,7 @@ pipeline {
                 // Build your Maven project
                 // For example:
                 // sh 'mvn clean package'
+                echo 'Pipeline executed successfully!'
             }
         }
 
@@ -30,6 +32,7 @@ pipeline {
                 // Run your tests
                 // For example:
                 // sh 'mvn test'
+                echo 'Pipeline executed successfully!'
             }
         }
 
@@ -38,6 +41,7 @@ pipeline {
                 // Deploy your application to a server or container
                 // For example:
                 // sh 'mvn deploy'
+                echo 'Pipeline executed successfully!'
             }
         }
     }
@@ -46,16 +50,19 @@ pipeline {
         always {
             // This block is executed no matter if the pipeline succeeds or fails
             // For example, you can clean up temporary files here
+            echo 'Pipeline executed successfully!'
         }
 
         success {
             // This block is executed only if the pipeline succeeds
             // For example, you can trigger notifications or deployments here
+            echo 'Pipeline executed successfully!'
         }
 
         failure {
             // This block is executed only if the pipeline fails
             // For example, you can send failure notifications here
+            echo 'Pipeline executed successfully!'
         }
     }
 }
