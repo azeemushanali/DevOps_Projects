@@ -17,5 +17,8 @@ RUN apt-get update
 # Install Docker
 RUN apt-get install -y docker-ce
 
+RUN usermod -aG docker jenkins 
+
+
 # Switch back to the Jenkins user
 USER jenkins
