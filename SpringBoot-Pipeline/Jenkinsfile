@@ -70,7 +70,7 @@ pipeline {
         success {
             script {
                 // Trigger Argo CD deployment here
-                def argoApiUrl = "http://127.0.0.1:58164/api/v1/applications"
+                def argoApiUrl = "http://127.0.0.1:${argoPort}/api/v1/applications"
                 def response = httpRequest(
                     url: argoApiUrl,
                     contentType: 'APPLICATION_JSON',
