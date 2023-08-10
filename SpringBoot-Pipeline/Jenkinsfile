@@ -65,4 +65,35 @@ pipeline {
         }
     }
   }
+  // Continous Deployment 
+  post {
+        success {
+            script {
+                // Trigger Argo CD deployment here
+                def argoApiUrl = "http://127.0.0.1:58164/api/applications"
+                def response = httpRequest(
+                    url: argoApiUrl,
+                    contentType: 'APPLICATION_JSON',
+                    httpMode: 'POST',
+                    requestBody: """
+                    {
+                        "name": "test",
+                        "project": "default",
+                        "source": {
+                            "repoURL": "https://github.com/azeemushanali/DevOps_Projects",
+                            "path": "SpringBoot-Pipeline/K8S-Manifest/",
+                            "targetRevision": "main"
+                        },
+                        "destination": {
+                            "namespace": "default"
+                        }
+                    }
+                    """
+                )
+                if (response.status != 201) {
+                    error("Failed to trigger Argo CD deployment")
+                }
+            }
+        }
+    }
 }
