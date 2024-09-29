@@ -43,7 +43,7 @@ pipeline {
                         echo "Checking if commit messages are pangrams..."
                         commitMessages.each { commit ->
                             echo "Checking commit message: '${commit}'"
-                            def result = sh(script: "python3 check_pangram.py '${commit}'", returnStatus: true)
+                            def result = sh(script: "python3 ./Task-2/check_pangram.py '${commit}'", returnStatus: true)
                             if (result == 0) {
                                 echo "Commit message: '${commit}' is a pangram."
                             } else {
