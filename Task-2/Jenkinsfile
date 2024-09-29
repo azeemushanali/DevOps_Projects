@@ -1,73 +1,83 @@
 pipeline {
-    agent {
-        // Use the official Python Docker image
-        docker {
-            image 'python:3.9'
-            args '-v $HOME/.ssh:/root/.ssh' // To enable SSH and access private repo if necessary
-        }
-    }
+    agent any
 
     environment {
-        COMMIT_MESSAGE = "" // Placeholder for the commit message
+        REPO_URL = 'https://github.com/azeemushanali/DevOps_Projects.git'  // Replace with your actual GitHub repository URL
     }
 
     stages {
-        stage('Clone Repository') {
-            steps {
-                script {
-                    // Clone the repository using GitHub PAT
-                    git branch: 'main',
-                        url: 'https://github.com/azeemushanali/DevOps_Projects',
-                        credentialsId: 'Jenkins'  // Replace 'github-pat' with your GitHub PAT ID
-                }
-            }
-        }
+        // stage('Clone Repository') {
+        //     steps {
+        //         script {
+        //             try {
+        //                 echo "Cloning the repository..."
+        //                 git branch: 'main', url: "${env.REPO_URL}"
+        //             } catch (Exception e) {
+        //                 echo "Error during repository clone: ${e}"
+        //                 currentBuild.result = 'FAILURE'
+        //                 error "Cloning failed. Exiting..."
+        //             }
+        //         }
+        //     }
+        // }
 
-        stage('Fetch Commit Message') {
+        stage('Check Pangram for a Sample String') {
             steps {
                 script {
-                    // Retrieve the latest commit message
-                    COMMIT_MESSAGE = sh(script: 'git log -1 --pretty=%B', returnStdout: true).trim()
-                    echo "Commit Message: ${COMMIT_MESSAGE}"
-                }
-            }
-        }
-
-        stage('Run Pangram Check') {
-            steps {
-                script {
-                    // Navigate to the Task-2 directory where the Python script is located
-                    dir('Task-2') {
-                        try {
-                            // Run the pangram check script inside the Docker container
-                            sh "python check_pangram.py '${COMMIT_MESSAGE}'"
-                        } catch (Exception err) {
-                            echo "Error: Pangram check failed."
-                            error "Build failed due to pangram check."
-                        }
+                    try {
+                        echo "Running pangram check for a sample string..."
+                        sh 'python3 --version'
+                        sh 'python3 pangram_checker.py "The quick brown fox jumps over the lazy dog"'
+                    } catch (Exception e) {
+                        echo "Error during pangram check: ${e}"
+                        currentBuild.result = 'FAILURE'
+                        error "Sample pangram check failed. Exiting..."
                     }
                 }
             }
         }
-    }
 
-    post {
-        always {
-            script {
-                dir('Task-2') {
-                    // Archive the logs for debugging purposes
-                    echo "Archiving pangram check logs..."
-                    archiveArtifacts artifacts: 'pangram_check.log', allowEmptyArchive: true
-                }
-            }
-        }
+//         stage('Check Pangram for GitHub Commit Messages') {
+//             steps {
+//                 script {
+//                     try {
+//                         // Get the list of recent commit messages
+//                         echo "Extracting recent commit messages..."
+//                         def commitMessages = sh(script: 'git log -n 5 --pretty=format:"%s"', returnStdout: true).trim().split("\n")
+                        
+//                         // Check each commit message for pangram status
+//                         echo "Checking if commit messages are pangrams..."
+//                         commitMessages.each { commit ->
+//                             echo "Checking commit message: '${commit}'"
+//                             def result = sh(script: "python3 pangram_checker.py '${commit}'", returnStatus: true)
+//                             if (result == 0) {
+//                                 echo "Commit message: '${commit}' is a pangram."
+//                             } else {
+//                                 echo "Commit message: '${commit}' is NOT a pangram."
+//                             }
+//                         }
+//                     } catch (Exception e) {
+//                         echo "Error while checking commit messages: ${e}"
+//                         currentBuild.result = 'FAILURE'
+//                         error "Commit message check failed. Exiting..."
+//                     }
+//                 }
+//             }
+//         }
+//     }
 
-        success {
-            echo 'Pangram check passed successfully!'
-        }
-
-        failure {
-            echo 'Pangram check failed!'
-        }
-    }
-}
+//     post {
+//         always {
+//             script {
+//                 echo "Cleaning up workspace..."
+//                 cleanWs()
+//             }
+//         }
+//         success {
+//             echo "Pipeline completed successfully!"
+//         }
+//         failure {
+//             echo "Pipeline failed. Check the logs for more details."
+//         }
+//     }
+// }

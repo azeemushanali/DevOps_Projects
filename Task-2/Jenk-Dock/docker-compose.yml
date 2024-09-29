@@ -1,0 +1,18 @@
+version: '3.8'
+
+services:
+  jenkins:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: jenkins-docker
+    user: root
+    ports:
+      - "8080:8080"  # Expose Jenkins web UI on port 8080
+      - "50000:50000"  # Expose Jenkins agent communication port
+    volumes:
+      - jenkins_home:/var/jenkins_home  # Persistent Jenkins data storage
+      - /var/run/docker.sock:/var/run/docker.sock  # Share Docker socket with Jenkins container
+
+volumes:
+  jenkins_home:
