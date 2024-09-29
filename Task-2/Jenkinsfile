@@ -17,8 +17,8 @@ pipeline {
                 script {
                     // Clone the repository using GitHub PAT
                     git branch: 'main',
-                        url: 'https://github.com/your-username/your-private-repo.git',
-                        credentialsId: 'github-pat'  // Replace 'github-pat' with your GitHub PAT ID
+                        url: 'https://github.com/azeemushanali/DevOps_Projects',
+                        credentialsId: 'Jenkins'  // Replace 'github-pat' with your GitHub PAT ID
                 }
             }
         }
