@@ -21,7 +21,7 @@ pipeline {
                     try {
                         echo "Running pangram check for a sample string..."
                         sh 'python3 --version'
-                        sh 'python3 pangram_checker.py "The quick brown fox jumps over the lazy dog"'
+                        sh 'python3 ./Task-2/check_pangram.py "The quick brown fox jumps over the lazy dog"'
                     } catch (Exception e) {
                         echo "Error during pangram check: ${e}"
                         currentBuild.result = 'FAILURE'
@@ -43,7 +43,7 @@ pipeline {
                         echo "Checking if commit messages are pangrams..."
                         commitMessages.each { commit ->
                             echo "Checking commit message: '${commit}'"
-                            def result = sh(script: "python3 pangram_checker.py '${commit}'", returnStatus: true)
+                            def result = sh(script: "python3 check_pangram.py '${commit}'", returnStatus: true)
                             if (result == 0) {
                                 echo "Commit message: '${commit}' is a pangram."
                             } else {
