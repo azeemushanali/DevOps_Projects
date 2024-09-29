@@ -1,0 +1,73 @@
+pipeline {
+    agent {
+        // Use the official Python Docker image
+        docker {
+            image 'python:3.9'
+            args '-v $HOME/.ssh:/root/.ssh' // To enable SSH and access private repo if necessary
+        }
+    }
+
+    environment {
+        COMMIT_MESSAGE = "" // Placeholder for the commit message
+    }
+
+    stages {
+        stage('Clone Repository') {
+            steps {
+                script {
+                    // Clone the repository using GitHub PAT
+                    git branch: 'main',
+                        url: 'https://github.com/your-username/your-private-repo.git',
+                        credentialsId: 'github-pat'  // Replace 'github-pat' with your GitHub PAT ID
+                }
+            }
+        }
+
+        stage('Fetch Commit Message') {
+            steps {
+                script {
+                    // Retrieve the latest commit message
+                    COMMIT_MESSAGE = sh(script: 'git log -1 --pretty=%B', returnStdout: true).trim()
+                    echo "Commit Message: ${COMMIT_MESSAGE}"
+                }
+            }
+        }
+
+        stage('Run Pangram Check') {
+            steps {
+                script {
+                    // Navigate to the Task-2 directory where the Python script is located
+                    dir('Task-2') {
+                        try {
+                            // Run the pangram check script inside the Docker container
+                            sh "python check_pangram.py '${COMMIT_MESSAGE}'"
+                        } catch (Exception err) {
+                            echo "Error: Pangram check failed."
+                            error "Build failed due to pangram check."
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    post {
+        always {
+            script {
+                dir('Task-2') {
+                    // Archive the logs for debugging purposes
+                    echo "Archiving pangram check logs..."
+                    archiveArtifacts artifacts: 'pangram_check.log', allowEmptyArchive: true
+                }
+            }
+        }
+
+        success {
+            echo 'Pangram check passed successfully!'
+        }
+
+        failure {
+            echo 'Pangram check failed!'
+        }
+    }
+}
